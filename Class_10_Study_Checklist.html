@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 10 Study Checklist</title>
+<style>
+:root{--bg:#f7f3ee;--card:#fff;--text:#2d2926;--muted:#766f69;--accent:#8f6f58;--line:#e5ddd5;--done:#eee8e2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:720px;margin:auto;padding:20px 14px 40px}
+h1{margin:4px 0 5px;font-size:27px}
+.subtitle{color:var(--muted);margin:0 0 16px}
+.progress-wrap{position:sticky;top:0;background:rgba(247,243,238,.96);backdrop-filter:blur(8px);padding:10px 0 12px;z-index:5}
+.progress{height:10px;background:#e5ddd5;border-radius:99px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:var(--accent);transition:.2s}
+.progress-text{font-weight:700;margin-bottom:7px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:17px;margin:12px 0;padding:14px}
+.day.complete{background:var(--done)}
+.day-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:800}
+.day-count{font-size:13px;color:var(--muted);white-space:nowrap}
+.tasks{margin-top:9px}
+.task{display:flex;gap:10px;align-items:flex-start;padding:8px 2px;cursor:pointer}
+.task input{width:21px;height:21px;flex:none;accent-color:var(--accent);margin:1px 0 0}
+.task span{line-height:1.35}
+.task input:checked + span{text-decoration:line-through;color:var(--muted)}
+button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:11px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.note{font-size:13px;color:var(--muted);margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>📚 Class 10 Study Checklist</h1>
+<p class="subtitle">October 3–24 • Tap each box when you finish a task.</p>
+
+<div class="progress-wrap">
+  <div class="progress-text" id="progressText">0% complete • 0/0 tasks</div>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div id="days"></div>
+
+<div class="actions">
+  <button id="reset">Reset everything</button>
+</div>
+<p class="note">Your checkmarks are saved automatically on this device/browser.</p>
+</main>
+
+<script>
+const data=[
+["Oct 3","Saturday",["Maths — AP: basic concepts","Science — Electricity: current, circuit, potential difference","School topics","Tuition","Tuition revision","AP — basic practice"]],
+["Oct 4","Sunday",["School topics","Maths — AP: nth term","Maths — specific terms + number of terms","History — WWI, Satyagraha, Rowlatt Act, Jallianwala Bagh","Electricity — Ohm’s Law, resistance, V-I relationship","Questions + active recall"]],
+["Oct 5","Monday",["School topics","Tuition","Tuition revision","Electricity — resistance + factors affecting resistance","Electricity — resistivity","Electricity numericals"]],
+["Oct 6","Tuesday",["School topics","AP — sum of first n terms","AP — NCERT questions","History — Non-Cooperation + Khilafat","History — different groups and participation","Questions + active recall"]],
+["Oct 7","Wednesday",["School topics","Tuition","Tuition revision","Electricity — series combination","Electricity — parallel combination","Electricity numericals"]],
+["Oct 8","Thursday",["School topics","Tuition","Tuition revision","History — Civil Disobedience + Salt March","History — different groups","History recall questions"]],
+["Oct 9","Friday",["Coordinate Geometry — coordinate plane + distance formula","Coordinate Geometry — section formula + problems","Electricity — full revision + formula sheet","Electricity — numericals","Nationalism in India — collective belonging + important events","History questions"]],
+["Oct 10","Saturday",["Coordinate Geometry — NCERT questions","Acids, Bases & Salts — salts: basics + family","Important salts + compounds + uses","School topics","Tuition","Tuition revision"]],
+["Oct 11","Sunday",["School topics","Triangles — similar figures/triangles","Triangles — criteria of similarity","Triangle examples","Water Resources — scarcity + conservation","Water Resources — multipurpose projects","Questions + recall"]],
+["Oct 12","Monday",["School topics","Tuition","Tuition revision","Triangles — similarity theorems + applications","Triangle questions"]],
+["Oct 13","Tuesday",["School topics","Triangles — BPT proof + converse","BPT questions","Metals & Non-metals — physical/chemical properties","Reactions with oxygen, water and acids","Reaction recall"]],
+["Oct 14","Wednesday",["School topics","Tuition","Tuition revision","Metals & Non-metals — reactivity series","Displacement reactions","Ionic compounds","Important reactions"]],
+["Oct 15","Thursday",["School topics","Tuition","Tuition revision","Agriculture — types of farming + cropping patterns","Agriculture — major crops","Crop conditions + recall"]],
+["Oct 16","Friday",["Applications of Trigonometry — heights/distances","Line of sight + angles","Trigonometry problems","Reproduction — asexual reproduction + types","Sexual reproduction in plants","Agriculture — remaining topics + technological reforms","Agriculture questions"]],
+["Oct 17","Saturday",["Reproduction — male reproductive system","Reproduction — female reproductive system","Fertilisation + reproductive health","School topics","Tuition","Tuition revision","Reproduction diagrams + recall"]],
+["Oct 18","Sunday",["School topics","Federalism — features + levels","Coming-together vs holding-together","Federalism in India + decentralisation","Gender, Religion & Caste — gender division","Religion + caste"]],
+["Oct 19","Monday",["School topics","Tuition","Tuition revision","Political Parties — functions + necessity","Political Parties — challenges + recall"]],
+["Oct 20","Tuesday",["School topics","Sectors — primary/secondary/tertiary","Organised/unorganised + public/private","Sectors questions","Money & Credit — money as medium of exchange","Formal/informal credit + SHGs","Money & Credit questions"]],
+["Oct 21","Wednesday",["School topics","Tuition","Tuition revision","Nationalism in India — quick revision","Water Resources + Agriculture — quick revision","Federalism — quick revision"]],
+["Oct 22","Thursday",["School topics","Tuition","Tuition revision","Electricity — quick revision","Acids, Bases & Salts — salts","Metals & Non-metals","Reproduction"]],
+["Oct 23","Friday",["AP + Coordinate Geometry","Triangles + Applications of Trigonometry","Electricity + numericals","Chemistry — salts + metals/non-metals","Biology — Reproduction","Mistakes + weak topics"]],
+["Oct 24","Saturday",["History — Nationalism in India","Geography — Water Resources + Agriculture","Civics — Federalism + Gender, Religion & Caste + Political Parties","Economics — Sectors + Money & Credit","Tuition","Tuition revision","Final recall — Maths formulas","Final recall — Science formulas/reactions/diagrams"]]
+];
+
+const KEY="class10-study-checklist-v1";
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){saved={}}
+
+const days=document.getElementById("days");
+
+data.forEach((d,di)=>{
+  const section=document.createElement("section");
+  section.className="day";
+  section.dataset.day=di;
+
+  const head=document.createElement("div");
+  head.className="day-head";
+  head.innerHTML=`<span>📅 ${d[0]} — ${d[1]}</span><span class="day-count">0/${d[2].length}</span>`;
+  section.appendChild(head);
+
+  const tasks=document.createElement("div");
+  tasks.className="tasks";
+
+  d[2].forEach((task,ti)=>{
+    const label=document.createElement("label");
+    label.className="task";
+    const input=document.createElement("input");
+    input.type="checkbox";
+    input.dataset.id=`${di}-${ti}`;
+    input.checked=!!saved[input.dataset.id];
+    const span=document.createElement("span");
+    span.textContent=task;
+    label.append(input,span);
+    tasks.appendChild(label);
+    input.addEventListener("change",()=>{
+      saved[input.dataset.id]=input.checked;
+      try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}
+      update();
+    });
+  });
+
+  section.appendChild(tasks);
+  days.appendChild(section);
+});
+
+function update(){
+  const boxes=[...document.querySelectorAll("input[type=checkbox]")];
+  const done=boxes.filter(x=>x.checked).length;
+  const total=boxes.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById("progressText").textContent=`${pct}% complete • ${done}/${total} tasks`;
+  document.getElementById("progressBar").style.width=pct+"%";
+
+  document.querySelectorAll(".day").forEach(day=>{
+    const b=[...day.querySelectorAll("input")];
+    const n=b.filter(x=>x.checked).length;
+    day.querySelector(".day-count").textContent=`${n}/${b.length}`;
+    day.classList.toggle("complete",n===b.length);
+  });
+}
+
+document.getElementById("reset").addEventListener("click",()=>{
+  if(confirm("Reset all your checkmarks?")){
+    saved={};
+    try{localStorage.removeItem(KEY)}catch(e){}
+    document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
+    update();
+  }
+});
+
+update();
+</script>
+</body>
+</html>
